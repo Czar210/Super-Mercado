@@ -70,12 +70,12 @@ def buscar_supermercados_distintos():
 criar_tabela()
 
 # Interface Streamlit
-st.set_page_config(page_title="POO DRAGÃO GUERREIRO Gestão de Produtos de Supermercados 🐼", layout="centered")
+st.set_page_config(page_title="POODRAGÃOGUERREIRO Gestão de Produtos de Supermercados 🐼", layout="centered")
 
 # Adicionar imagem no topo
 st.image("https://cdn.ome.lt/EWlvzO0sMGgiSsy0CbNtIkyEJ1A=/1200x630/smart/extras/conteudos/kung_fu_panda.jpg", use_column_width=True)  # Substitua o URL pelo caminho da sua imagem
 
-st.markdown("<h1 style='text-align: center; color: #4CAF50;'>🐼POO DRAGÃO GUERREIRO Gestão de Produtos de Supermercados 🛒</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #4CAF50;'>🐼 POODRAGÃOGUERREIRO Gestão de Produtos de Supermercados 🛒</h1>", unsafe_allow_html=True)
 
 # Busca de Produtos
 st.markdown("<h2 style='color: #FF5722;'>🔍 Buscar Produtos</h2>", unsafe_allow_html=True)
@@ -101,19 +101,21 @@ if st.button('Buscar'):
         st.write("Nenhum produto encontrado. 😕")
 
 # Adicionar Novo Produto em uma nova janela
-if st.button('Adicionar Novo Produto'):
-    with st.expander('Adicionar Novo Produto', expanded=True):
-        st.markdown("<h2 style='color: #2196F3;'>🆕 Adicionar Novo Produto</h2>", unsafe_allow_html=True)
-        nome = st.text_input('Nome do Produto')
-        preco = st.number_input('Preço', format="%.2f")
-        supermercado = st.text_input('Supermercado')
-        tipo = st.text_input('Tipo do Produto')
-        data_preco = st.date_input('Data do Preço', datetime.now())
+with st.expander('Adicionar Novo Produto', expanded=False):
+    st.markdown("<h2 style='color: #2196F3;'>🆕 Adicionar Novo Produto</h2>", unsafe_allow_html=True)
+    nome = st.text_input('Nome do Produto')
+    preco = st.number_input('Preço', format="%.2f")
+    supermercado = st.text_input('Supermercado')
+    tipo = st.text_input('Tipo do Produto')
+    data_preco = st.date_input('Data do Preço', datetime.now())
 
-        if st.button('Salvar Produto'):
+    if st.button('Salvar Produto'):
+        if nome and preco and supermercado and tipo:
             adicionar_produto(nome, preco, supermercado, tipo, data_preco.strftime('%Y-%m-%d'))
             st.success('Produto adicionado com sucesso! 🎉')
+        else:
+            st.error('Por favor, preencha todos os campos.')
 
 # Rodapé
 st.markdown("<hr>", unsafe_allow_html=True)
-st.markdown("<footer style='text-align: center; color: #888;'>© 2024 POODRAGÃO GUERREIRO Gestão de Produtos de Supermercados 🛒</footer>", unsafe_allow_html=True)
+st.markdown("<footer style='text-align: center; color: #888;'>© 2024 POODRAGÃOGUERREIRO Gestão de Produtos de Supermercados 🛒</footer>", unsafe_allow_html=True)
