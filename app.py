@@ -85,12 +85,12 @@ def buscar_categorias_distintas():
 criar_tabela()
 
 # Interface Streamlit
-st.set_page_config(page_title="É os guri ntemcomo Gestão de Produtos de Supermercados 🐼", layout="centered")
+st.set_page_config(page_title="POODRAGÃOGUERREIRO de Produtos de Supermercados 🐼", layout="centered")
 
 # Adicionar imagem no topo
 st.image("https://cdn.ome.lt/EWlvzO0sMGgiSsy0CbNtIkyEJ1A=/1200x630/smart/extras/conteudos/kung_fu_panda.jpg", use_column_width=True)  # Substitua o URL pelo caminho da sua imagem
 
-st.markdown("<h1 style='text-align: center; color: #4CAF50;'>🐼 É os guri ntemcomo Gestão de Produtos de Supermercados 🛒</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #4CAF50;'>🐼 POODRAGÃOGUERREIRO Gestão de Produtos de Supermercados 🛒</h1>", unsafe_allow_html=True)
 
 # Busca de Produtos
 st.markdown("<h2 style='color: #FF5722;'>🔍 Buscar Produtos</h2>", unsafe_allow_html=True)
