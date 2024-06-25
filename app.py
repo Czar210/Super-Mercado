@@ -14,7 +14,7 @@ def criar_tabela():
             nome TEXT NOT NULL,
             preco REAL NOT NULL,
             supermercado TEXT NOT NULL,
-            tipo TEXT NOT NULL,
+            categoria TEXT NOT NULL,
             data_preco TEXT NOT NULL
         )
     ''')
@@ -23,29 +23,37 @@ def criar_tabela():
     conn.close()
 
 # Função para adicionar produto ao banco de dados
-def adicionar_produto(nome, preco, supermercado, tipo, data_preco):
+def adicionar_produto(nome, preco, supermercado, categoria, data_preco):
     conn = sqlite3.connect('produtos.db')
     cursor = conn.cursor()
 
     cursor.execute('''
-        INSERT INTO produtos (nome, preco, supermercado, tipo, data_preco)
+        INSERT INTO produtos (nome, preco, supermercado, categoria, data_preco)
         VALUES (?, ?, ?, ?, ?)
-    ''', (nome, preco, supermercado, tipo, data_preco))
+    ''', (nome, preco, supermercado, categoria, data_preco))
 
     conn.commit()
     conn.close()
 
 # Função para buscar produtos
-def buscar_produtos(parte_do_nome='', ordenar_por='preco ASC', supermercado=None):
+def buscar_produtos(parte_do_nome='', ordenar_por='preco ASC', supermercado=None, categoria=None, data_final=None):
     conn = sqlite3.connect('produtos.db')
     cursor = conn.cursor()
 
-    query = "SELECT nome, preco, supermercado, tipo, data_preco FROM produtos WHERE nome LIKE ?"
+    query = "SELECT nome, preco, supermercado, categoria, data_preco FROM produtos WHERE nome LIKE ?"
     params = ['%' + parte_do_nome + '%']
     
     if supermercado:
         query += " AND supermercado = ?"
         params.append(supermercado)
+    
+    if categoria:
+        query += " AND categoria = ?"
+        params.append(categoria)
+    
+    if data_final:
+        query += " AND data_preco <= ?"
+        params.append(data_final)
     
     query += f" ORDER BY {ordenar_por}"
 
@@ -61,6 +69,17 @@ def buscar_supermercados_distintos():
     cursor = conn.cursor()
     
     cursor.execute("SELECT DISTINCT supermercado FROM produtos")
+    resultados = cursor.fetchall()
+    conn.close()
+
+    return [row[0] for row in resultados]
+
+# Função para buscar categorias distintas
+def buscar_categorias_distintas():
+    conn = sqlite3.connect('produtos.db')
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT DISTINCT categoria FROM produtos")
     resultados = cursor.fetchall()
     conn.close()
 
@@ -90,12 +109,19 @@ ordenar_opcoes = {
 supermercado_opcoes = [None] + buscar_supermercados_distintos()
 supermercado = st.selectbox('Supermercado', supermercado_opcoes)
 
+categoria_opcoes = [None] + buscar_categorias_distintas()
+categoria = st.selectbox('Categoria', categoria_opcoes)
+
+data_final = st.date_input('Data Final', value=None)
+
 if st.button('Buscar'):
-    resultados = buscar_produtos(parte_do_nome, ordenar_opcoes[ordenar_por], supermercado)
+    data_final_str = data_final.strftime('%Y-%m-%d') if data_final else None
+    
+    resultados = buscar_produtos(parte_do_nome, ordenar_opcoes[ordenar_por], supermercado, categoria, data_final_str)
 
     st.markdown("<h2 style='color: #FF5722;'>📋 Resultados</h2>", unsafe_allow_html=True)
     if resultados:
-        df = pd.DataFrame(resultados, columns=['Nome', 'Preço', 'Supermercado', 'Tipo', 'Data do Preço'])
+        df = pd.DataFrame(resultados, columns=['Nome', 'Preço', 'Supermercado', 'Categoria', 'Data do Preço'])
         st.dataframe(df)
     else:
         st.write("Nenhum produto encontrado. 😕")
@@ -106,12 +132,12 @@ with st.expander('Adicionar Novo Produto', expanded=False):
     nome = st.text_input('Nome do Produto')
     preco = st.number_input('Preço', format="%.2f")
     supermercado = st.text_input('Supermercado')
-    tipo = st.text_input('Tipo do Produto')
+    categoria = st.text_input('Categoria do Produto')
     data_preco = st.date_input('Data do Preço', datetime.now())
 
     if st.button('Salvar Produto'):
-        if nome and preco and supermercado and tipo:
-            adicionar_produto(nome, preco, supermercado, tipo, data_preco.strftime('%Y-%m-%d'))
+        if nome and preco and supermercado and categoria:
+            adicionar_produto(nome, preco, supermercado, categoria, data_preco.strftime('%Y-%m-%d'))
             st.success('Produto adicionado com sucesso! 🎉')
         else:
             st.error('Por favor, preencha todos os campos.')
