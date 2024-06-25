@@ -36,7 +36,7 @@ def adicionar_produto(nome, preco, supermercado, categoria, data_preco):
     conn.close()
 
 # Função para buscar produtos
-def buscar_produtos(parte_do_nome='', ordenar_por='preco ASC', supermercado=None, categoria=None, data_final=None):
+def buscar_produtos(parte_do_nome='', ordenar_por='preco ASC', supermercado=None, categoria=None):
     conn = sqlite3.connect('produtos.db')
     cursor = conn.cursor()
 
@@ -50,10 +50,6 @@ def buscar_produtos(parte_do_nome='', ordenar_por='preco ASC', supermercado=None
     if categoria:
         query += " AND categoria = ?"
         params.append(categoria)
-    
-    if data_final:
-        query += " AND data_preco <= ?"
-        params.append(data_final)
     
     query += f" ORDER BY {ordenar_por}"
 
@@ -112,12 +108,8 @@ supermercado = st.selectbox('Supermercado', supermercado_opcoes)
 categoria_opcoes = [None] + buscar_categorias_distintas()
 categoria = st.selectbox('Categoria', categoria_opcoes)
 
-data_final = st.date_input('Data Final', value=None)
-
 if st.button('Buscar'):
-    data_final_str = data_final.strftime('%Y-%m-%d') if data_final else None
-    
-    resultados = buscar_produtos(parte_do_nome, ordenar_opcoes[ordenar_por], supermercado, categoria, data_final_str)
+    resultados = buscar_produtos(parte_do_nome, ordenar_opcoes[ordenar_por], supermercado, categoria)
 
     st.markdown("<h2 style='color: #FF5722;'>📋 Resultados</h2>", unsafe_allow_html=True)
     if resultados:
