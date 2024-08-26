@@ -1,4 +1,4 @@
-# Super-Mercado
+# Super Mercado
 
 Trabalho para manter Gestão de Produtos de Supermercados, divido em 5 etapas
 
